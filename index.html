@@ -54,6 +54,32 @@
     .table-container {
       overflow-x: auto;
     }
+    
+    input#searchInput {
+      max-width: 500px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    
+    @media (max-width: 600px) {
+      .search-container {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      input#searchInput {
+        max-width: 90vw;
+        width: 100%;
+      }
+
+      input#searchInput {
+        max-width: 80%;
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -74,7 +100,18 @@
     }
 
     /* تحسين التوافق مع الجوال */
+    
     @media (max-width: 600px) {
+      .search-container {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      input#searchInput {
+        max-width: 90vw;
+        width: 100%;
+      }
+
       h1, h2 {
         font-size: 18px;
       }
@@ -103,7 +140,33 @@
         overflow-x: auto;
       }
 
-      table {
+      
+    input#searchInput {
+      max-width: 500px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    
+    @media (max-width: 600px) {
+      .search-container {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      input#searchInput {
+        max-width: 90vw;
+        width: 100%;
+      }
+
+      input#searchInput {
+        max-width: 80%;
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+
+    table {
         min-width: 900px;
       }
     }
