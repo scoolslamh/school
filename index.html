@@ -1,13 +1,14 @@
-
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>صفحة الاستعلام عن بيانات المدارس</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<html dir="rtl" lang="ar">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   صفحة الاستعلام عن بيانات المدارس
+  </title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&amp;display=swap" rel="stylesheet"/>
   <style>
-    body {
+   body {
       font-family: 'Cairo', sans-serif;
       background-color: #f8f9fa;
       margin: 0;
@@ -71,50 +72,91 @@
       background-color: #f2f2f2;
     }
   </style>
-</head>
-<body>
+ </head>
+ <body>
   <div id="passwordPrompt">
-    <h2>🔐 الرجاء إدخال كلمة المرور للوصول إلى صفحة الاستعلام</h2>
-    <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" />
-    <button onclick="checkPassword()">دخول</button>
-    <p id="errorMessage" style="color: red; display: none;">❌ كلمة المرور غير صحيحة</p>
+   <h2>
+    🔐 الرجاء إدخال كلمة المرور للوصول إلى صفحة الاستعلام
+   </h2>
+   <input id="passwordInput" placeholder="أدخل كلمة المرور" type="password"/>
+   <button onclick="checkPassword()">
+    دخول
+   </button>
+   <p id="errorMessage" style="color: red; display: none;">
+    ❌ كلمة المرور غير صحيحة
+   </p>
   </div>
-
   <div id="mainContent" style="display:none;">
-    <h1>🔍 الاستعلام عن بيانات المدارس</h1>
-    
-    <div class="search-container" style="background: linear-gradient(to left, #e0f2f1, #ffffff); border: 1px solid #cde0d3;">
-      <h2 style="color: #004d40; margin-bottom: 15px;">📌 أدخل 3 أحرف على الأقل للبحث في بيانات المدارس</h2>
-      <input type="text" id="searchInput" style="border: 2px solid #80cbc4; background-color: #f9fdfc;" placeholder="ابحث بالرقم الإحصائي، اسم المدير، المنسق، أو رقم الجوال...">
-      <div id="tooShort" style="color: #e64a19; font-weight: bold;" style="display:none;">⚠️ أدخل 3 أحرف أو أرقام على الأقل للبحث</div>
-      <div id="loadingMessage" style="color: #00796b; font-weight: bold;" style="display:none;">⏳ جاري البحث...</div>
+   <h1>
+    🔍 الاستعلام عن بيانات المدارس
+   </h1>
+   <div class="search-container" style="background: linear-gradient(to left, #e0f2f1, #ffffff); border: 1px solid #cde0d3;">
+    <h2 style="color: #004d40; margin-bottom: 15px;">
+     📌 أدخل 3 أحرف على الأقل للبحث في بيانات المدارس
+    </h2>
+    <input id="searchInput" placeholder="ابحث بالرقم الإحصائي، اسم المدير، المنسق، أو رقم الجوال..." style="border: 2px solid #80cbc4; background-color: #f9fdfc;" type="text"/>
+    <div id="tooShort" style="display:none;">
+     ⚠️ أدخل 3 أحرف أو أرقام على الأقل للبحث
     </div>
-    <div class="table-container">
-      <table id="resultsTable" style="display:none;">
-        <thead>
-          <tr>
-            <th>الرقم الإحصائي</th>
-            <th>القطاع</th>
-            <th>المكتب</th>
-            <th>النوع</th>
-            <th>اسم المدرسة</th>
-            <th>اسم المدير/ة</th>
-            <th>رقم الجوال</th>
-            <th>اسم المنسق/ة</th>
-            <th>جوال المنسق/ة</th>
-            <th>حالة التأكيد</th>
-            <th>الملاحظات</th>
-            <th>تاريخ التأكيد</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div id="noResults" style="display:none;">لا توجد نتائج مطابقة</div>
+    <div id="loadingMessage" style="display:none;">
+     ⏳ جاري البحث...
     </div>
+   </div>
+   <div class="table-container">
+    <table id="resultsTable" style="display:none;">
+     <thead>
+      <tr>
+       <th>
+        الرقم الإحصائي
+       </th>
+       <th>
+        القطاع
+       </th>
+       <th>
+        المكتب
+       </th>
+       <th>
+        النوع
+       </th>
+       <th>
+        اسم المدرسة
+       </th>
+       <th>
+        اسم المدير/ة
+       </th>
+       <th>
+        رقم الجوال
+       </th>
+       <th>
+        اسم المنسق/ة
+       </th>
+       <th>
+        جوال المنسق/ة
+       </th>
+       <th>
+        حالة التأكيد
+       </th>
+       <th>
+        الملاحظات
+       </th>
+       <th>
+        تاريخ التأكيد
+       </th>
+      </tr>
+     </thead>
+     <tbody>
+     </tbody>
+    </table>
+    <div id="noResults" style="display:none;">
+     لا توجد نتائج مطابقة
+    </div>
+   </div>
+   <button onclick="window.open('https://ali71425.github.io/school-data-page/', '_blank')" style="background-color:#004d40; font-size:16px; margin:20px auto; display:block; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer;">
+    🔗 الانتقال إلى صفحة البيانات المدرسية
+   </button>
   </div>
-
   <script>
-    const passwordKey = "schoolQueryAccess";
+   const passwordKey = "schoolQueryAccess";
     const correctPassword = "admin123";
 
     if (localStorage.getItem(passwordKey) === "granted") {
@@ -196,5 +238,5 @@
       }, 300); // تأخير بسيط لإظهار "جاري البحث"
     });
   </script>
-</body>
+ </body>
 </html>
