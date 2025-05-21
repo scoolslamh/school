@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <title>صفحة الاستعلام عن بيانات المدارس</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
     body {
       font-family: 'Cairo', sans-serif;
@@ -27,7 +27,16 @@
       margin-bottom: 20px;
       text-align: center;
     }
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
     input[type="text"], input[type="password"] {
+      max-width: 300px;
+
       width: 100%;
       padding: 12px;
       margin-top: 10px;
@@ -46,7 +55,7 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    #loadingMessage, #noResults, #tooShort {
+    #loadingMessage, #noResults, #tooShort, #schoolCount {
       text-align: center;
       color: #999;
       margin-top: 10px;
@@ -72,40 +81,13 @@
     table tr:nth-child(even) {
       background-color: #f2f2f2;
     }
-
-    /* تحسين التوافق مع الجوال */
     @media (max-width: 600px) {
-      h1, h2 {
-        font-size: 18px;
-      }
-
-      .search-container, #passwordPrompt {
-        padding: 15px;
-      }
-
-      table th, table td {
-        font-size: 12px;
-        padding: 6px;
-      }
-
-      button {
-        width: 100%;
-        padding: 12px;
-        font-size: 15px;
-      }
-
-      input[type="text"], input[type="password"] {
-        font-size: 14px;
-        padding: 10px;
-      }
-
-      .table-container {
-        overflow-x: auto;
-      }
-
-      table {
-        min-width: 900px;
-      }
+      h1, h2 { font-size: 18px; }
+      .search-container, #passwordPrompt { padding: 15px; }
+      table th, table td { font-size: 12px; padding: 6px; }
+      button { width: 100%; padding: 12px; font-size: 15px; }
+      input[type="text"], input[type="password"] { font-size: 14px; padding: 10px; }
+      table { min-width: 900px; }
     }
   </style>
 </head>
@@ -113,50 +95,55 @@
   <div id="passwordPrompt">
     <h2>🔐 الرجاء إدخال كلمة المرور للوصول إلى صفحة الاستعلام</h2>
     <input id="passwordInput" type="password" placeholder="أدخل كلمة المرور"/>
-    <button onclick="checkPassword()">دخول</button>
+    <button id="loginBtn">دخول</button>
     <p id="errorMessage" style="color: red; display: none;">❌ كلمة المرور غير صحيحة</p>
   </div>
 
   <div id="mainContent" style="display:none;">
-    <h1>🔍 الاستعلام عن بيانات المدارس</h1>
-    <div class="search-container" style="background: linear-gradient(to left, #e0f2f1, #ffffff); border: 1px solid #cde0d3;">
-      <h2 style="color: #004d40; margin-bottom: 15px;">📌 أدخل 3 أحرف على الأقل للبحث في بيانات المدارس</h2>
-      <input id="searchInput" type="text" placeholder="ابحث بالرقم الإحصائي، اسم المدرسة، المدير، المنسق، أو رقم الجوال..." style="border: 2px solid #80cbc4; background-color: #f9fdfc; max-width: 400px; margin: 0 auto; display: block;"/>
+    <div style="border: 2px solid #006c35; border-radius: 10px; padding: 15px; margin: 20px auto; max-width: 800px; text-align: center;">
+  <div style="font-size: 18px; font-weight: bold; color: #006c35; margin-bottom: 10px;">قسم الأمن والسلامة والمرافق</div>
+  <h1 style="margin: 0; color: #006c35; font-size: 22px;">
+    صفحة الاستعلام عن بيانات المدارس التابعة للإدارة العامة للتعليم بمنطقة عسير والمحافظات التابعة لها
+  </h1>
+</div>
+    <div class="search-container">
+      <div style="position: relative; display: inline-block;">
+  <input id="searchInput" type="text" autocomplete="off" placeholder="أدخل 3 أحرف على الأقل للبحث" style="color: #666; border: 2px solid red; border-radius: 6px; max-width: 250px; font-size: 14px; padding: 10px 35px 10px 10px;"/>
+  <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #999; pointer-events: none;">
+    🔍
+  </span>
+</div>
       <div id="tooShort" style="display:none;">⚠️ أدخل 3 أحرف أو أرقام على الأقل للبحث</div>
       <div id="loadingMessage" style="display:none;">⏳ جاري البحث...</div>
+      <div id="schoolCount" style="display:none;">عدد النتائج: <span id="countValue"></span></div>
+    </div>
+
+    <div class="action-buttons">
+      <button onclick="logout()">🔒 تسجيل خروج</button>
+      <button onclick="window.open('https://ali71425.github.io/school-data-page/', '_blank')">🔗 الانتقال إلى صفحة الداشبورد</button>
     </div>
 
     <div class="table-container">
       <table id="resultsTable" style="display:none;">
         <thead>
           <tr>
-            <th>الرقم الإحصائي</th>
-            <th>القطاع</th>
-            <th>المكتب</th>
-            <th>النوع</th>
-            <th>اسم المدرسة</th>
-            <th>اسم المدير/ة</th>
-            <th>رقم الجوال</th>
-            <th>اسم المنسق/ة</th>
-            <th>جوال المنسق/ة</th>
-            <th>حالة التأكيد</th>
-            <th>الملاحظات</th>
-            <th>تاريخ التأكيد</th>
+            <th>الرقم الإحصائي</th><th>القطاع</th><th>المكتب</th><th>النوع</th><th>اسم المدرسة</th><th>اسم المدير/ة</th><th>رقم الجوال</th><th>اسم المنسق/ة</th><th>جوال المنسق/ة</th><th>حالة التأكيد</th><th>الملاحظات</th><th>تاريخ التأكيد</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-      <div id="noResults" style="display:none;">لا توجد نتائج مطابقة</div>
+      <div id="noResults" style="display:none; color:red;">🔍 لا توجد نتائج مطابقة، يرجى تعديل كلمات البحث أو التأكد من صحة الإدخال.</div>
     </div>
-
-    <button onclick="window.open('https://ali71425.github.io/school-data-page/', '_blank')" style="background-color:#004d40; font-size:16px; margin:20px auto; display:block; padding:12px 24px; border:none; border-radius:8px; color:white; cursor:pointer;">
-      🔗 الانتقال إلى صفحة الداشبورد
-    </button>
   </div>
 
   <script>
     const passwordKey = "schoolQueryAccess";
     const correctPassword = "admin123";
+
+    document.getElementById("loginBtn").addEventListener("click", checkPassword);
+    document.getElementById("passwordInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") checkPassword();
+    });
 
     if (localStorage.getItem(passwordKey) === "granted") {
       document.getElementById("passwordPrompt").style.display = "none";
@@ -169,9 +156,30 @@
         localStorage.setItem(passwordKey, "granted");
         document.getElementById("passwordPrompt").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
+
+        const welcomeMsg = document.createElement("div");
+        welcomeMsg.textContent = "✅ تم تسجيل الدخول بنجاح! مرحبًا بك 👋";
+        welcomeMsg.style.backgroundColor = "#d4edda";
+        welcomeMsg.style.color = "#155724";
+        welcomeMsg.style.padding = "10px";
+        welcomeMsg.style.margin = "10px auto";
+        welcomeMsg.style.textAlign = "center";
+        welcomeMsg.style.border = "1px solid #c3e6cb";
+        welcomeMsg.style.borderRadius = "8px";
+        welcomeMsg.style.maxWidth = "600px";
+        document.body.insertBefore(welcomeMsg, document.getElementById("mainContent"));
+
+        setTimeout(() => {
+          welcomeMsg.remove();
+        }, 5000);
       } else {
         document.getElementById("errorMessage").style.display = "block";
       }
+    }
+
+    function logout() {
+      localStorage.removeItem(passwordKey);
+      location.reload();
     }
 
     const searchInput = document.getElementById("searchInput");
@@ -180,6 +188,8 @@
     const noResults = document.getElementById("noResults");
     const tooShort = document.getElementById("tooShort");
     const loadingMessage = document.getElementById("loadingMessage");
+    const countValue = document.getElementById("countValue");
+    const schoolCount = document.getElementById("schoolCount");
 
     let allData = [];
     let dataLoaded = false;
@@ -193,7 +203,14 @@
         }
       });
 
-    searchInput.addEventListener("input", () => {
+    searchInput.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        triggerSearch();
+      }
+    });
+
+    function triggerSearch() {
       const keyword = searchInput.value.trim().toLowerCase();
       tableBody.innerHTML = "";
 
@@ -201,6 +218,7 @@
         resultsTable.style.display = "none";
         noResults.style.display = "none";
         loadingMessage.style.display = "none";
+        schoolCount.style.display = "none";
         tooShort.style.display = keyword.length > 0 ? "block" : "none";
         return;
       }
@@ -210,7 +228,7 @@
 
       setTimeout(() => {
         const filtered = allData.filter(row => {
-          const searchFields = [0, 4, 5, 6, 7]; // أضف البحث في اسم المدرسة (رقم العمود 4)
+          const searchFields = [0, 1, 2, 4, 5, 6, 7];
           return searchFields.some(index =>
             (row[index] || "").toString().toLowerCase().includes(keyword)
           );
@@ -220,6 +238,7 @@
         if (filtered.length === 0) {
           resultsTable.style.display = "none";
           noResults.style.display = "block";
+          schoolCount.style.display = "none";
         } else {
           filtered.forEach(row => {
             const tr = document.createElement("tr");
@@ -232,10 +251,13 @@
           });
           resultsTable.style.display = "table";
           noResults.style.display = "none";
+          schoolCount.style.display = "block";
+          countValue.textContent = filtered.length;
         }
         loadingMessage.style.display = "none";
       }, 300);
-    });
-  </script>
+    }
+  searchInput.value = "";
+</script>
 </body>
 </html>
