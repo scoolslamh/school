@@ -71,8 +71,14 @@
       max-width: 320px;
       width: 100%;
     }
-    .table-container { overflow-x: auto; margin-top: 20px; }
+    .table-container {
+      max-height: 500px;
+      overflow-y: auto; overflow-x: auto; margin-top: 20px; }
     table {
+      border-collapse: collapse;
+      width: 100%;
+      table-layout: fixed;
+      position: relative;
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
@@ -81,14 +87,29 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     th {
+      position: sticky;
+      top: 0;
+      background: #2e7d32;
+      color: white;
+      z-index: 2;
+      position: sticky;
+      top: 0;
+      z-index: 1;
       background-color: #2e7d32;
       color: white;
       padding: 10px;
     }
     td {
+      white-space: normal;
+      word-break: break-word;
+      overflow: visible;
       padding: 10px;
       border: 1px solid #e0e0e0;
+      text-align: center;
+      vertical-align: middle;
     }
+    
+    
     tr:nth-child(even) { background-color: #f1f8e9; }
     #totalCount {
       text-align: center;
@@ -194,6 +215,7 @@
         ].forEach(key => {
           const td = document.createElement("td");
           td.textContent = row[key] || '';
+          
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
