@@ -1,231 +1,285 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>صفحة الاستعلام عن بيانات المدارس</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    body { font-family: 'Cairo', sans-serif; background-color: #f8f9fa; padding: 20px; color: #333; }
-    h1 { text-align: center; color: #006c35; }
-    .top-bar { display: flex; justify-content: flex-start; gap: 15px; margin-bottom: 10px; }
-    .top-bar button { padding: 10px 15px; border: none; border-radius: 6px; background-color: #006c35; color: white; font-size: 14px; cursor: pointer; }
-    .top-bar button.dashboard { background-color: #006c35; }
-    .search-container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; text-align: center; }
-    input, select { padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin: 5px; font-size: 14px; max-width: 300px; width: 100%; }
-    #loadingMessage, #noResults, #tooShort, #schoolCount { margin-top: 10px; text-align: center; color: #999; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    thead { background-color: #006c35; color: white; }
-    tr:nth-child(even) { background-color: #f2f2f2; }
-    #totalCount { text-align: center; font-weight: bold; margin-bottom: 15px; color: #006c35; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to bottom right, #e8f5e9, #ffffff);
+      padding: 20px;
+      color: #2e7d32;
+    }
+    .main-header {
+      background-color: #1b5e20;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    .main-header h1 { margin: 0; font-size: 24px; }
+    .main-header h2 { margin: 5px 0 0; font-size: 18px; font-weight: normal; color: #c8e6c9; }
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .top-bar button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #388e3c;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .top-bar button:hover { background-color: #2e7d32; }
+    #userInfo {
+      background-color: #f1f8e9;
+      color: #2e7d32;
+      font-weight: bold;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .search-container {
+      max-width: 800px;
+      margin: auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input, select {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #bdbdbd;
+      margin: 6px;
+      font-size: 15px;
+      max-width: 320px;
+      width: 100%;
+    }
+    .table-container { overflow-x: auto; margin-top: 20px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 1000px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    th {
+      background-color: #2e7d32;
+      color: white;
+      padding: 10px;
+    }
+    td {
+      padding: 10px;
+      border: 1px solid #e0e0e0;
+    }
+    tr:nth-child(even) { background-color: #f1f8e9; }
+    #totalCount {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #1b5e20;
+    }
   </style>
+</head>
+<body>
+  <div class="main-header">
+    <h1>الإدارة العامة للتعليم بمنطقة عسير</h1>
+    <h2>قسم الأمن والسلامة والمرافق</h2>
+  </div>
+  <div class="top-bar" style="justify-content: space-between; background-color: #f1f8e9; border-radius: 12px; padding: 10px 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+  <div id="userInfo" style="display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 15px; color: #2e7d32;">
+    <i class="fas fa-user-circle"></i>
+    <span>المستخدم: <strong id="userNameLabel">...</strong> | الصلاحية: <strong id="userRoleLabel">...</strong></span>
+  </div>
+  <div>
+    <button onclick="window.open('https://ali71425.github.io/school-data-page/', '_blank')"><i class="fas fa-chart-line"></i> الداشبورد</button>
+    <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+  </div>
+</div>
+  <div class="search-container">
+    <select id="sectorFilter"><option value="">📍 الكل - القطاع</option></select>
+    <select id="typeFilter"><option value="">🏫 الكل - النوع</option></select>
+    <input id="searchInput" type="text" placeholder="🔎 أدخل 3 أحرف أو أكثر"/>
+    <div id="tooShort" style="display:none; color:#c62828; font-weight:bold;">⚠️ أدخل 3 أحرف أو أرقام على الأقل</div>
+    <div id="loadingMessage" style="display:none; color:#f9a825;">⏳ جاري البحث...</div>
+    <div id="schoolCount" style="display:none;">عدد النتائج: <span id="countValue"></span></div>
+  </div>
+  <div class="table-container">
+    <table id="resultsTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>الرقم الإحصائي</th><th>القطاع</th><th>المكتب</th><th>النوع</th><th>اسم المدرسة</th>
+          <th>اسم المدير/ة</th><th>رقم الجوال</th><th>اسم المنسق/ة</th><th>جوال المنسق/ة</th>
+          <th>حالة التأكيد</th><th>الملاحظات</th><th>تاريخ التأكيد</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="noResults" style="display:none; color:#c62828; text-align:center; font-weight:bold;">❌ لا توجد نتائج مطابقة</div>
+  </div>
   <script>
+    // سكربت عرض البيانات والبحث كما هو مدرج مسبقًا
+    let schoolData = [];
+
+    function fetchSchoolData() {
+      document.getElementById("loadingMessage").style.display = 'block';
+      fetch('https://script.google.com/macros/s/AKfycbwmLZXbtQQuIui6c-zQTjQDsT4OPFM_YWWR3taupQ5A2hUg0TWXyZRBsxvsc56uMrDc/exec')
+        .then(response => response.json())
+        .then(data => {
+          schoolData = data.schools || [];
+          populateFilters(schoolData);
+          displayResults(schoolData);
+          document.getElementById("loadingMessage").style.display = 'none';
+        })
+        .catch(() => {
+          document.getElementById("loadingMessage").textContent = "⚠️ تعذر تحميل البيانات.";
+        });
+    }
+
+    function populateFilters(data) {
+      const sectors = new Set();
+      const types = new Set();
+      data.forEach(row => {
+        if (row.القطاع) sectors.add(row.القطاع);
+        if (row.النوع) types.add(row.النوع);
+      });
+      const sectorSelect = document.getElementById("sectorFilter");
+      const typeSelect = document.getElementById("typeFilter");
+      sectors.forEach(sec => {
+        const option = document.createElement("option");
+        option.value = sec;
+        option.textContent = sec;
+        sectorSelect.appendChild(option);
+      });
+      types.forEach(type => {
+        const option = document.createElement("option");
+        option.value = type;
+        option.textContent = type;
+        typeSelect.appendChild(option);
+      });
+    }
+
+    function displayResults(data) {
+      const tbody = document.querySelector("#resultsTable tbody");
+      tbody.innerHTML = "";
+      if (data.length === 0) {
+        document.getElementById("resultsTable").style.display = "none";
+        document.getElementById("noResults").style.display = "block";
+        document.getElementById("schoolCount").style.display = "none";
+        return;
+      }
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        [
+          'الرقم الإحصائي', 'القطاع', 'المكتب', 'النوع', 'اسم المدرسة',
+          'اسم المدير/ة', 'رقم الجوال', 'اسم المنسق/ة', 'جوال المنسق/ة',
+          'حالة التأكيد', 'الملاحظات', 'تاريخ التأكيد'
+        ].forEach(key => {
+          const td = document.createElement("td");
+          td.textContent = row[key] || '';
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      document.getElementById("resultsTable").style.display = "table";
+      document.getElementById("noResults").style.display = "none";
+      document.getElementById("schoolCount").style.display = "block";
+      document.getElementById("countValue").textContent = data.length;
+    }
+
+    function filterResults() {
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      const sector = document.getElementById("sectorFilter").value;
+      const type = document.getElementById("typeFilter").value;
+      if (query.length > 0 && query.length < 3) {
+        document.getElementById("tooShort").style.display = 'block';
+        document.getElementById("resultsTable").style.display = "none";
+        document.getElementById("schoolCount").style.display = "none";
+        document.getElementById("noResults").style.display = "none";
+        return;
+      } else {
+        document.getElementById("tooShort").style.display = 'none';
+      }
+      let filtered = schoolData.filter(row => {
+        const matchQuery = query.length < 3 || Object.values(row).some(v => v && String(v).toLowerCase().includes(query));
+        const matchSector = !sector || row["القطاع"] === sector;
+        const matchType = !type || row["النوع"] === type;
+        return matchQuery && matchSector && matchType;
+      });
+      displayResults(filtered);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+  const userName = sessionStorage.getItem("userName") || "غير معروف";
+  const userRole = sessionStorage.getItem("userRole") || "مستخدم";
+  document.getElementById("userNameLabel").textContent = userName;
+  document.getElementById("userRoleLabel").textContent = userRole;
+  document.getElementById("searchInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") filterResults();
+  });
+  document.getElementById("searchInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") filterResults();
+  });
+      if (sessionStorage.getItem("authenticated") === "true") {
+        fetchSchoolData();
+        document.getElementById("searchInput").addEventListener("input", filterResults);
+        document.getElementById("sectorFilter").addEventListener("change", filterResults);
+        document.getElementById("typeFilter").addEventListener("change", filterResults);
+      } else {
+        const loginOverlay = document.createElement("div");
+        loginOverlay.id = "loginOverlay";
+        loginOverlay.style = `position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(248, 249, 250, 0.98); z-index: 9999; display: flex; align-items: center; justify-content: center;`;
+        loginOverlay.innerHTML = `
+          <div style=\"background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); text-align: center; max-width: 400px; width: 100%;\">
+            <h2 style=\"color: #006c35; margin-bottom: 20px;\">🔐 تسجيل الدخول</h2>
+            <input id=\"userCodeInput\" type=\"text\" placeholder=\"أدخل رقم المستخدم\" style=\"padding: 12px; font-size: 16px; width: 100%; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;\"/>
+            <button onclick=\"verifyUserCode()\" style=\"background-color: #006c35; color: white; padding: 12px 20px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;\">دخول</button>
+            <p id=\"loginError\" style=\"color: red; margin-top: 10px; display: none;\">❌ الرقم غير مصرح به</p>
+          </div>
+        `;
+        document.body.appendChild(loginOverlay);
+      }
+    });
+
     function verifyUserCode() {
       const userCode = document.getElementById("userCodeInput").value.trim();
-      fetch(`https://script.google.com/macros/s/AKfycbzPYXilUKUrNCRJniMLIZwBqXUxfLu2msDiq_aHSehoykxSCbrp7By_3HdpaLAmlDzN/exec?code=${userCode}`)
+      fetch(`https://script.google.com/macros/s/AKfycbwmLZXbtQQuIui6c-zQTjQDsT4OPFM_YWWR3taupQ5A2hUg0TWXyZRBsxvsc56uMrDc/exec?code=${userCode}`)
         .then(response => response.json())
         .then(data => {
           if (data.status === 'ok') {
-            localStorage.setItem("schoolQueryAccess", "granted");
+            sessionStorage.setItem("authenticated", "true");
             sessionStorage.setItem("userName", data.name);
             sessionStorage.setItem("userRole", data.role);
             sessionStorage.setItem("userSchool", data.schoolCode);
-            document.getElementById("loginOverlay").style.display = 'none';
-            document.getElementById("userInfo").textContent = `👤 المستخدم: ${data.name} | الصلاحية: ${data.role}`;
-            const welcomeMsg = document.createElement("div");
-            welcomeMsg.textContent = `✅ مرحبًا ${data.name} - الصلاحية: ${data.role}`;
-            welcomeMsg.style.backgroundColor = "#d4edda";
-            welcomeMsg.style.color = "#155724";
-            welcomeMsg.style.padding = "10px";
-            welcomeMsg.style.margin = "10px auto";
-            welcomeMsg.style.textAlign = "center";
-            welcomeMsg.style.border = "1px solid #c3e6cb";
-            welcomeMsg.style.borderRadius = "8px";
-            welcomeMsg.style.maxWidth = "600px";
-            document.body.insertBefore(welcomeMsg, document.body.firstChild);
-            setTimeout(() => welcomeMsg.remove(), 4000);
+            sessionStorage.setItem("loginTime", Date.now());
             location.reload();
           } else {
             document.getElementById("loginError").style.display = 'block';
           }
         });
     }
-  </script>
-</head>
-<body>
-  <div id="loginOverlay" style="position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(248, 249, 250, 0.98); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); text-align: center; max-width: 400px; width: 100%;">
-      <h2 style="color: #006c35; margin-bottom: 20px;">🔐 تسجيل الدخول</h2>
-      <input id="userCodeInput" type="text" placeholder="أدخل رقم المستخدم" style="padding: 12px; font-size: 16px; width: 100%; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;"/>
-      <button onclick="verifyUserCode()" style="background-color: #006c35; color: white; padding: 12px 20px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;">دخول</button>
-      <p id="loginError" style="color: red; margin-top: 10px; display: none;">❌ الرقم غير مصرح به</p>
-    </div>
-  </div>
-<div id="userInfo" style="text-align: center; margin-top: 10px; font-weight: bold; color: #006c35;"></div>
 
-<div class="top-bar">
-  <button class="dashboard" onclick="window.open('https://ali71425.github.io/school-data-page/', '_blank')">📈 <strong>الداشبورد</strong></button>
-  <button onclick="logout()">🚪 <strong>تسجيل الخروج</strong></button>
-</div>
-
-<div id="totalCount"></div>
-<div class="search-container">
-  <select id="sectorFilter"><option value="">الكل - القطاع</option></select>
-  <select id="typeFilter"><option value="">الكل - النوع</option></select>
-  <input id="searchInput" type="text" placeholder="أدخل 3 أحرف أو أكثر"/>
-  <div id="tooShort" style="display:none;">⚠️ أدخل 3 أحرف أو أرقام على الأقل</div>
-  <div id="loadingMessage" style="display:none;">⏳ جاري البحث...</div>
-  <div id="schoolCount" style="display:none;">عدد النتائج: <span id="countValue"></span></div>
-</div>
-
-<div class="table-container">
-  <table id="resultsTable" style="display:none;">
-    <thead>
-      <tr>
-        <th>الرقم الإحصائي</th><th>القطاع</th><th>المكتب</th><th>النوع</th><th>اسم المدرسة</th><th>اسم المدير/ة</th><th>رقم الجوال</th><th>اسم المنسق/ة</th><th>جوال المنسق/ة</th><th>حالة التأكيد</th><th>الملاحظات</th><th>تاريخ التأكيد</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  <div id="noResults" style="display:none; color:red;"></div>
-</div>
-
-<script>
-const loginOverlay = document.getElementById("loginOverlay");
-if (localStorage.getItem("schoolQueryAccess") === "granted") {
-  loginOverlay.style.display = "none";
-  document.getElementById("userInfo").textContent = `👤 المستخدم: ${sessionStorage.getItem("userName")} | الصلاحية: ${sessionStorage.getItem("userRole")}`;
-}
-
-function logout() {
-  localStorage.removeItem("schoolQueryAccess");
-  sessionStorage.clear();
-  location.reload();
-}
-
-const sectorFilter = document.getElementById("sectorFilter");
-const typeFilter = document.getElementById("typeFilter");
-const searchInput = document.getElementById("searchInput");
-const resultsTable = document.getElementById("resultsTable");
-const tableBody = resultsTable.querySelector("tbody");
-const noResults = document.getElementById("noResults");
-const tooShort = document.getElementById("tooShort");
-const loadingMessage = document.getElementById("loadingMessage");
-const countValue = document.getElementById("countValue");
-const schoolCount = document.getElementById("schoolCount");
-const totalCount = document.getElementById("totalCount");
-
-let allData = [];
-let dataLoaded = false;
-
-function populateOptions() {
-  const sectors = new Set();
-  allData.forEach(row => sectors.add(row[1]));
-  [...sectors].sort().forEach(sector => {
-    const option = document.createElement("option");
-    option.value = sector;
-    option.textContent = sector;
-    sectorFilter.appendChild(option);
-  });
-  ["بنين", "بنات"].forEach(type => {
-    const option = document.createElement("option");
-    option.value = type;
-    option.textContent = type;
-    typeFilter.appendChild(option);
-  });
-}
-
-function triggerSearch() {
-  const keyword = searchInput.value.trim().toLowerCase();
-  const selectedSector = sectorFilter.value;
-  const selectedType = typeFilter.value;
-  tableBody.innerHTML = "";
-  noResults.style.display = "none";
-  tooShort.style.display = "none";
-  schoolCount.style.display = "none";
-
-  if (!dataLoaded) return;
-
-  if (keyword.length > 0 && keyword.length < 3 && !selectedSector && !selectedType) {
-    tooShort.style.display = "block";
-    return;
-  }
-
-  loadingMessage.style.display = "block";
-  setTimeout(() => {
-    const filtered = allData.filter(row => {
-      const matchSector = !selectedSector || row[1] === selectedSector;
-      const matchType = !selectedType || row[3] === selectedType;
-      const matchKeyword = keyword.length < 3 || row.some(cell => String(cell).toLowerCase().includes(keyword));
-      const userRole = sessionStorage.getItem("userRole");
-      const userSchool = sessionStorage.getItem("userSchool");
-      const isAllowed = true;
-      return matchSector && matchType && matchKeyword && isAllowed;
-    });
-
-    loadingMessage.style.display = "none";
-    if (filtered.length === 0) {
-      resultsTable.style.display = "none";
-      noResults.style.display = "block";
-      return;
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = window.location.href;
     }
-    filtered.forEach(row => {
-      const tr = document.createElement("tr");
-      row.forEach((cell, colIndex) => {
-        const td = document.createElement("td");
-        td.textContent = cell;
-        if (sessionStorage.getItem("userRole") === "admin") {
-          td.contentEditable = true;
-          td.style.backgroundColor = "#fffbe6";
-          td.addEventListener("blur", () => {
-            const updatedValue = td.textContent;
-            const schoolId = row[0];
-            fetch("https://script.google.com/macros/s/AKfycbzbDQUHj6Bt1o4WmhbsXqR09yujdJSEmPNr9_2nb3i380ZT8WMfs5T7iZ6fdbvhR9nM/exec", {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: `update=1&schoolId=${encodeURIComponent(schoolId)}&col=${colIndex}&value=${encodeURIComponent(updatedValue)}`
-            })
-            .then(response => response.text())
-            .then(message => {
-              const notice = document.createElement("div");
-              notice.textContent = message.includes("✅") ? message : `⚠️ ${message}`;
-              notice.style.backgroundColor = "#d4edda";
-              notice.style.color = "#155724";
-              notice.style.padding = "8px";
-              notice.style.margin = "5px auto";
-              notice.style.textAlign = "center";
-              notice.style.border = "1px solid #c3e6cb";
-              notice.style.borderRadius = "6px";
-              notice.style.maxWidth = "400px";
-              document.querySelector('.search-container')?.insertAdjacentElement('beforebegin', notice);
-              setTimeout(() => notice.remove(), 5000);
-            });
-          });
-        }
-        tr.appendChild(td);
-      });
-      tableBody.appendChild(tr);
-    });
-    resultsTable.style.display = "table";
-    schoolCount.style.display = "block";
-    countValue.textContent = filtered.length;
-  }, 300);
-}
-
-fetch("https://script.google.com/macros/s/AKfycbyEHr9r1KLWmf-vCShIlFU7N_q69ZFws0mTu_3AbY-l1IqJTOvwNQaL2m8IeagGpFgo/exec?action=stats")
-  .then(res => res.json())
-  .then(data => {
-    allData = data.raw || [];
-    dataLoaded = true;
-    totalCount.textContent = `إجمالي عدد المدارس: ${allData.length}`;
-    populateOptions();
-    triggerSearch();
-  });
-
-sectorFilter.addEventListener("change", triggerSearch);
-typeFilter.addEventListener("change", triggerSearch);
-searchInput.addEventListener("input", triggerSearch);
-</script>
+  </script>
 </body>
 </html>
